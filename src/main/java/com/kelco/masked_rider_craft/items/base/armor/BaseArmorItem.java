@@ -36,7 +36,7 @@ public class BaseArmorItem extends BaseItem implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public static final DataTicket<String> TEXTURE = DataTicket.create("texture", String.class);
-
+    public static final DataTicket<String> MODEL = DataTicket.create("model", String.class);
 
     public BaseArmorItem(ArmorMaterial material, ArmorType type, Properties properties) {
         super(properties.humanoidArmor(material, type));

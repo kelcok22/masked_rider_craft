@@ -1,12 +1,11 @@
 package com.kelco.masked_rider_craft.items.base.armor.renderer;
 
 import com.kelco.masked_rider_craft.items.base.armor.BaseArmorItem;
+import com.kelco.masked_rider_craft.items.base.armor.BaseBeltItem;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+import net.minecraft.world.entity.EquipmentSlot;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
-import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 import static com.kelco.masked_rider_craft.MaskedRiderCore.MODID;
@@ -20,11 +19,20 @@ public class RiderModel extends DefaultedItemGeoModel<BaseArmorItem> {
 
     @Override
     public void addAdditionalStateData(BaseArmorItem animatable, Object relatedObject, GeoRenderState renderState) {
-         renderState.addGeckolibData(BaseArmorItem.TEXTURE, "masked_rider");
+        GeoArmorRenderer.RenderData renderData = ((GeoArmorRenderer.RenderData)relatedObject);
+        if (renderData.entity().getItemBySlot(EquipmentSlot.FEET).getItem()instanceof BaseBeltItem baseBeltItem) {
+            String name = baseBeltItem.getRiderName((renderData.entity().getItemBySlot(EquipmentSlot.FEET)));
+            renderState.addGeckolibData(BaseArmorItem.TEXTURE, baseBeltItem.getTexture(renderData.entity().getItemBySlot(EquipmentSlot.FEET), renderData.slot(), renderData.entity(), name));
+            renderState.addGeckolibData(BaseArmorItem.MODEL, baseBeltItem.getModel(renderData.entity().getItemBySlot(EquipmentSlot.FEET), renderData.slot(), renderData.entity(), name));
+        }
+        else {
+            renderState.addGeckolibData(BaseArmorItem.TEXTURE, "blank");
+            renderState.addGeckolibData(BaseArmorItem.MODEL, "masked_rider");
+        }
     }
     @Override
     public Identifier getModelResource(GeoRenderState renderState) {
-        return Identifier.fromNamespaceAndPath(MODID, "armor/masked_rider");
+        return Identifier.fromNamespaceAndPath(MODID, "armor/"+renderState.getGeckolibData(BaseArmorItem.MODEL));
     }
 
     @Override
